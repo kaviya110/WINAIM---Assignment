@@ -1,0 +1,34 @@
+Write a query to find all employees who have been hired in the last year.
+SELECT hire_date
+FROM employees
+ORDER BY hire_date DESC;  
+SELECT *
+FROM employees
+WHERE hire_date >= TRUNC(SYSDATE) - INTERVAL '1' YEAR;
+SELECT *
+FROM employees
+WHERE TRUNC(hire_date) >= TRUNC(SYSDATE) - INTERVAL '1' YEAR;
+SELECT COUNT(*) AS num_employees
+FROM employees;
+SELECT *
+FROM employees
+WHERE hire_date >= TRUNC(SYSDATE) - INTERVAL '2' YEAR;
+
+Write a query to calculate the total salary expenditure for each department.
+SELECT d.department_name, SUM(s.salary) AS total_salary_expenditure
+FROM employees e
+JOIN salaries s ON e.employee_id = s.employee_id
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name;
+
+Write a query to find the top 5 highest-paid employees along with their
+department names.
+SELECT *
+FROM (
+    SELECT e.employee_id, e.first_name, e.last_name, d.department_name, s.salary,
+           ROW_NUMBER() OVER (ORDER BY s.salary DESC) AS salary_rank
+    FROM employees e
+    JOIN salaries s ON e.employee_id = s.employee_id
+    JOIN departments d ON e.department_id = d.department_id
+)
+WHERE salary_rank <= 5;
